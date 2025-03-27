@@ -40,6 +40,23 @@ public class AutomataFactory {
         return result;
     }
 
+    public Automata kleeneClosure(Automata a) {
+        State oldInput = a.getInputState();
+        State oldOutput = a.getOutputState();
+
+        State newInput = new State("q0", false);
+        State newOutput = new State("q1", true);
+
+        newInput.addTransitionForSymbol("", oldInput);
+        newInput.addTransitionForSymbol("", newOutput);
+        newOutput.addTransitionForSymbol("", oldInput);
+
+        oldOutput.setAccepting(false);
+        oldOutput.addTransitionForSymbol("", newOutput);
+
+        return createNFA(newInput, newOutput);
+    }
+
     // public NFA BuildNFA(String symbol) {
     //
     // State input = new State("q1", false);
