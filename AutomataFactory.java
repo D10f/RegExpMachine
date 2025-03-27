@@ -1,12 +1,27 @@
+import java.util.List;
+
 public class AutomataFactory {
     public Automata createNFA(State input, State output) {
         return new Automata(input, output);
     }
 
-    public Automata concatNFA(Automata first, Automata second) {
+    public Automata concatNFA(Automata first, Automata... rest) {
+        for (Automata second : rest) {
+            first = _concatNFA(first, second);
+        }
+        return first;
+    }
+
+    private Automata _concatNFA(Automata first, Automata second) {
         State firstOutputState = first.getOutputState();
+        State secondOutputState = second.getOutputState();
+
         firstOutputState.setAccepting(false);
-        return new Automata(first.getInputState(), second.getOutputState());
+        firstOutputState.addTransitionForSymbol("", second.getInputState());
+
+        secondOutputState.setAccepting(true);
+
+        return new Automata(first.getInputState(), secondOutputState);
     }
 
     // public NFA BuildNFA(String symbol) {

@@ -5,6 +5,12 @@ public class Main {
 
         AutomataFactory factory = new AutomataFactory();
         Automata m1 = factory.createNFA(s1, s2);
+        Automata m2 = factory.createNFA(s1, s2);
+        Automata m3 = factory.createNFA(s1, s2);
+        Automata m4 = factory.createNFA(s1, s2);
+        Automata m5 = factory.createNFA(s1, s2);
+
+        factory.concatNFA(m1, m2);
 
         System.out.println(m1.getInputState().getName());
 
