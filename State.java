@@ -22,6 +22,10 @@ public class State {
         return accepting;
     }
 
+    public void setAccepting(boolean newValue) {
+        accepting = newValue;
+    }
+
     public void addTransitionForSymbol(String symbol, State state) {
 
         List<State> stateArray = states.get(symbol);
