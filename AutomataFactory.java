@@ -24,6 +24,22 @@ public class AutomataFactory {
         return new Automata(first.getInputState(), secondOutputState);
     }
 
+    public Automata disjunctionNFA(Automata... rest) {
+        State newInput = new State("q0", false);
+        State newOutput = new State("q1", true);
+        Automata result = createNFA(newInput, newOutput);
+
+        for (Automata automata : rest) {
+            State input = automata.getInputState();
+            State output = automata.getOutputState();
+            newInput.addTransitionForSymbol("", input);
+            output.addTransitionForSymbol("", newOutput);
+            output.setAccepting(false);
+        }
+
+        return result;
+    }
+
     // public NFA BuildNFA(String symbol) {
     //
     // State input = new State("q1", false);
