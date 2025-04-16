@@ -20,6 +20,6 @@ public class Factory {
      * The empty string or epsilon transition.
      */
     public static NFA epsilon() {
-        return character("e");
+        return character("Ɛ");
     }
 }
