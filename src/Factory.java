@@ -5,8 +5,10 @@ package src;
  */
 public class Factory {
 
+    private static String EPSILON = "Ɛ";
+
     /**
-     * Single character machine: /^ab$/.
+     * Single character machine: /^a$/.
      */
     public static NFA character(String symbol) {
         State input = new State();
@@ -20,16 +22,27 @@ public class Factory {
      * The empty string or epsilon transition.
      */
     public static NFA epsilon() {
-        return character("Ɛ");
+        return character(EPSILON);
     }
 
     /**
-     * Concatenation of an arbitrary number of character machines: /^ABCD$/
+     * Concatenation of an arbitrary number of machines: /^ABCD$/
      */
     public static NFA concatenation(NFA first, NFA... rest) {
         NFA accumulator = first;
         for (NFA next : rest) {
             accumulator = pairConcatenation(accumulator, next);
+        }
+        return accumulator;
+    }
+
+    /**
+     * Disjunction of an arbitrary number of machines: /^A|B|C|D$/
+     */
+    public static NFA union(NFA first, NFA... rest) {
+        NFA accumulator = first;
+        for (NFA next : rest) {
+            accumulator = pairUnion(accumulator, next);
         }
         return accumulator;
     }
@@ -43,8 +56,32 @@ public class Factory {
         State rightOutputState = right.getOutputState();
         leftOutputState.setAcceptingState(false);
         rightOutputState.setAcceptingState(true);
-        leftOutputState.addTransitionForSymbol("Ɛ", rightIntputState);
+        leftOutputState.addTransitionForSymbol(EPSILON, rightIntputState);
         return new NFA(leftOutputState, rightOutputState);
     }
 
+    /**
+     * Disjunction of two machines: /^A|B$/
+     */
+    private static NFA pairUnion(NFA left, NFA right) {
+        State startingState = new State();
+        State endingState = new State();
+
+        State leftInputState = left.getInputState();
+        State leftOutputState = left.getOutputState();
+        leftInputState.setAcceptingState(false);
+        leftOutputState.setAcceptingState(false);
+
+        State rightInputState = right.getInputState();
+        State rightOutputState = right.getOutputState();
+        rightInputState.setAcceptingState(false);
+        rightOutputState.setAcceptingState(false);
+
+        startingState.addTransitionForSymbol(EPSILON, leftInputState);
+        startingState.addTransitionForSymbol(EPSILON, rightInputState);
+        leftOutputState.addTransitionForSymbol(EPSILON, endingState);
+        rightOutputState.addTransitionForSymbol(EPSILON, endingState);
+
+        return new NFA(startingState, endingState);
+    }
 }
