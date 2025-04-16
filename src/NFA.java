@@ -13,6 +13,14 @@ public class NFA {
         this.output = output;
     }
 
+    public State getInputState() {
+        return input;
+    }
+
+    public State getOutputState() {
+        return output;
+    }
+
     public boolean test(String string) {
         return input.test(string);
     }

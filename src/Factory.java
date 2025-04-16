@@ -6,7 +6,7 @@ package src;
 public class Factory {
 
     /**
-     * Single character machine: "a".
+     * Single character machine: /^ab$/.
      */
     public static NFA character(String symbol) {
         State input = new State();
@@ -21,5 +21,17 @@ public class Factory {
      */
     public static NFA epsilon() {
         return character("Ɛ");
+    }
+
+    /**
+     * Concatenation of two machines: /^AB$/
+     */
+    public static NFA concatenation(NFA left, NFA right) {
+        State leftOutputState = left.getOutputState();
+        State rightIntputState = right.getInputState();
+        State rightOutputState = right.getOutputState();
+        leftOutputState.setAcceptingState(false);
+        leftOutputState.addTransitionForSymbol("Ɛ", rightIntputState);
+        return new NFA(leftOutputState, rightOutputState);
     }
 }
