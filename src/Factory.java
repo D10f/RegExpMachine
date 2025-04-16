@@ -8,7 +8,7 @@ public class Factory {
     private static String EPSILON = "Ɛ";
 
     /**
-     * Single character machine: /^a$/.
+     * Single character machine: /a/.
      */
     public static NFA character(String symbol) {
         State input = new State();
@@ -26,7 +26,7 @@ public class Factory {
     }
 
     /**
-     * Concatenation of an arbitrary number of machines: /^ABCD$/
+     * Concatenation of an arbitrary number of machines: /ABCD/
      */
     public static NFA concatenation(NFA first, NFA... rest) {
         NFA accumulator = first;
@@ -37,7 +37,7 @@ public class Factory {
     }
 
     /**
-     * Disjunction of an arbitrary number of machines: /^A|B|C|D$/
+     * Disjunction of an arbitrary number of machines: /A|B|C|D/
      */
     public static NFA union(NFA first, NFA... rest) {
         NFA accumulator = first;
@@ -48,7 +48,27 @@ public class Factory {
     }
 
     /**
-     * Concatenation of two character machines: /^AB$/
+     * Repetition machine aka Kleene closure: /^a*$/
+     */
+    public static NFA repetition(NFA fragment) {
+        State startingState = new State();
+        State endingState = new State();
+        endingState.setAcceptingState(true);
+
+        State fragmentOutputState = fragment.getOutputState();
+        State fragmentInputState = fragment.getInputState();
+        fragmentOutputState.setAcceptingState(false);
+        fragmentOutputState.addTransitionForSymbol(EPSILON, endingState);
+
+        startingState.addTransitionForSymbol(EPSILON, startingState);
+        startingState.addTransitionForSymbol(EPSILON, endingState);
+        endingState.addTransitionForSymbol(EPSILON, fragmentInputState);
+
+        return new NFA(startingState, endingState);
+    }
+
+    /**
+     * Concatenation of two character machines: /AB/
      */
     private static NFA pairConcatenation(NFA left, NFA right) {
         State leftOutputState = left.getOutputState();
@@ -61,11 +81,12 @@ public class Factory {
     }
 
     /**
-     * Disjunction of two machines: /^A|B$/
+     * Disjunction of two machines: /A|B/
      */
     private static NFA pairUnion(NFA left, NFA right) {
         State startingState = new State();
         State endingState = new State();
+        endingState.setAcceptingState(true);
 
         State leftInputState = left.getInputState();
         State leftOutputState = left.getOutputState();
