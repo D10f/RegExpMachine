@@ -24,14 +24,27 @@ public class Factory {
     }
 
     /**
-     * Concatenation of two machines: /^AB$/
+     * Concatenation of an arbitrary number of character machines: /^ABCD$/
      */
-    public static NFA concatenation(NFA left, NFA right) {
+    public static NFA concatenation(NFA first, NFA... rest) {
+        NFA accumulator = first;
+        for (NFA next : rest) {
+            accumulator = pairConcatenation(accumulator, next);
+        }
+        return accumulator;
+    }
+
+    /**
+     * Concatenation of two character machines: /^AB$/
+     */
+    private static NFA pairConcatenation(NFA left, NFA right) {
         State leftOutputState = left.getOutputState();
         State rightIntputState = right.getInputState();
         State rightOutputState = right.getOutputState();
         leftOutputState.setAcceptingState(false);
+        rightOutputState.setAcceptingState(true);
         leftOutputState.addTransitionForSymbol("Ɛ", rightIntputState);
         return new NFA(leftOutputState, rightOutputState);
     }
+
 }
