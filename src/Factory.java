@@ -67,6 +67,18 @@ public class Factory {
         return new NFA(startingState, endingState);
     }
 
+    // public static NFA characterClass(String characterClass) {
+    //
+    // }
+
+    public static NFA plus(NFA fragment) {
+        return concatenation(fragment, fragment);
+    }
+
+    public static NFA optional(NFA fragment) {
+        return union(fragment, epsilon());
+    }
+
     /**
      * Concatenation of two character machines: /AB/
      */
