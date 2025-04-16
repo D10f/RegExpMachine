@@ -7,7 +7,7 @@ import java.util.List;
 public class State {
 
     private boolean acceptingState;
-    private HashMap<String, List<State>> states;
+    private HashMap<Character, List<State>> states;
 
     public State() {
         this.states = new HashMap<>();
@@ -21,7 +21,7 @@ public class State {
         acceptingState = newValue;
     }
 
-    public void addTransitionForSymbol(String symbol, State state) {
+    public void addTransitionForSymbol(Character symbol, State state) {
 
         List<State> stateArray = states.get(symbol);
 
@@ -33,7 +33,7 @@ public class State {
         }
     }
 
-    public List<State> getTransitionsForSymbol(String symbol) {
+    public List<State> getTransitionsForSymbol(Character symbol) {
         return states.get(symbol);
     }
 

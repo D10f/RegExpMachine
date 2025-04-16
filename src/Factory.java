@@ -5,12 +5,12 @@ package src;
  */
 public class Factory {
 
-    private static String EPSILON = "Ɛ";
+    private static char EPSILON = 'Ɛ';
 
     /**
      * Single character machine: /a/.
      */
-    public static NFA character(String symbol) {
+    public static NFA character(char symbol) {
         State input = new State();
         State output = new State();
         output.setAcceptingState(false);
@@ -67,7 +67,7 @@ public class Factory {
         return new NFA(startingState, endingState);
     }
 
-    // public static NFA characterClass(String characterClass) {
+    // public static NFA characterClass(char characterClass) {
     //
     // }
 
